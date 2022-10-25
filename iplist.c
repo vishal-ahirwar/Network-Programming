@@ -1,3 +1,5 @@
+//Listing network adapters on Linux and macOS
+//copyright(c)2022 vishal ahirwar. all rights reserved.
 #include<sys/socket.h>
 #include<netdb.h>
 #include<ifaddrs.h>
@@ -7,17 +9,38 @@
 #define SUCCESS 0
 #define FAILED -1
 
+void ListAddresses(struct ifaddrs*);
+struct ifaddrs* Getifaddrs_ptr();
+void print();
+
 int main(void)
+{
+    print();
+    struct ifaddrs*addresses=Getifaddrs_ptr();
+    ListAddresses(addresses);
+    freeifaddrs(addresses);
+    return SUCCESS;
+};
+
+void print()
 {
     system("clear");
     printf("\n[utility created by vishal ahirwar]\n");
+};
+
+struct ifaddrs* Getifaddrs_ptr()
+{
     struct ifaddrs*addresses=NULL;
     if(getifaddrs(&addresses)==-1)
     {
-        printf("[error]getifaddrs() call failed!\n");
-        return FAILED;
+        printf("getifaddrs() call failed!\n");
+        exit(EXIT_FAILURE);
     };
-    //going through the addresses linked list
+    return addresses;
+}
+void ListAddresses(struct ifaddrs*addresses)
+{
+       //going through the addresses linked list
     struct ifaddrs*address=addresses;
     while(address)
     {
@@ -34,6 +57,4 @@ int main(void)
         };
         address=address->ifa_next;
     };
-    freeifaddrs(addresses);
-    return SUCCESS;
-}
+};
