@@ -1,5 +1,5 @@
 // Copyright(c)2022 Vishal Ahirwar. All rights reserved.
-
+//Cross-platform program for listing network all the network adapters available on the machine
 #if defined(_WIN32)
 #ifndef _WIN32_WINT
 #define _WIN32_WINT 0x0600
@@ -37,7 +37,7 @@ int main(void)
 {
 	print();
 #if defined(_WIN32)
-	printf("running on win32...\n");
+	printf("running on win32...\n-----------------------\n");
 	WSADATA d;
 	if (WSAStartup(MAKEWORD(2, 2), &d))
 	{
@@ -68,28 +68,29 @@ int main(void)
 		}
 		else
 		{
-			printf("Error From GetAdapterAddresses!\n");
+			printf("Error From GetAdapterAddresses %d !\n", r);
 			free(adapters);
 			WSACleanup();
 			return FAIL;
 		};
-		PIP_ADAPTER_ADDRESSES adapter = adapters;
-		while (adapter)
-		{
-			printf("Adapter Name : %S\n", adapter->FriendlyName);
-			PIP_ADAPTER_UNICAST_ADDRESS address = adapter->FirstUnicastAddress;
-			while (address)
-			{
-				printf("\t%s\n", address->Address.lpSockaddr->sa_family == AF_INET ? "Ipv4" : "ipv6");
-				char ap[100];
-				getnameinfo(address->Address.lpSockaddr, address->Address.iSockaddrLength, ap, sizeof(ap), 0, 0, NI_NUMERICHOST);
-				printf("\t%s\n", ap);
-				address = address->Next;
-			};
-			adapter = adapter->Next;
-		};
 
 	} while (!adapters);
+	PIP_ADAPTER_ADDRESSES adapter = adapters;
+	while (adapter)
+	{
+		printf("Adapter Name : %S\n", adapter->FriendlyName);
+		PIP_ADAPTER_UNICAST_ADDRESS address = adapter->FirstUnicastAddress;
+		while (address)
+		{
+			printf("\t%s\n", address->Address.lpSockaddr->sa_family == AF_INET ? "Ipv4" : "ipv6");
+			char ap[100];
+			getnameinfo(address->Address.lpSockaddr, address->Address.iSockaddrLength, ap, sizeof(ap), 0, 0, NI_NUMERICHOST);
+			printf("\t%s\n", ap);
+			address = address->Next;
+		};
+		adapter = adapter->Next;
+		printf("\n*************************\n");
+	};
 	free(adapters);
 	WSACleanup();
 	printf("ok1\n");
@@ -144,5 +145,5 @@ void print()
 #else
 	system("cls");
 #endif
-	printf("\n[utility created by vishal ahirwar]\n");
+	printf("Copyright(c)2022 Vishal Ahirwar. All rights reserved.\n");
 };
