@@ -93,7 +93,8 @@ int main(void)
 	};
 	free(adapters);
 	WSACleanup();
-	printf("ok1\n");
+	printf("Press Any key to terminate Program...\n");
+	getchar();
 	return SUCCESS;
 #else
 	printf("running on linux machine...\n");
